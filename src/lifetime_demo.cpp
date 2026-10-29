@@ -49,18 +49,6 @@ int main() {
 
     std::cout << "Статичне фото: " << staticPhoto.getTitle() << '\n';
 
-    std::clog << "\n=== Експеримент: new без delete ===\n";
-
-    Photo* leakedPhoto = new Photo(
-        "Тест витоку пам'яті",
-        "Тестовий автор",
-        800,
-        600,
-        "2026-09-01"
-    );
-
-std::cout << "Динамічне фото: " << leakedPhoto->getTitle() << '\n';
-
     std::clog << "\n=== Динамічний об'єкт через unique_ptr ===\n";
 
     auto dynamicPhoto = std::make_unique<Photo>(

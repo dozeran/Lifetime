@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.20)
 
 project(cpp_lab03_lifetime LANGUAGES CXX)
@@ -18,43 +17,11 @@ target_include_directories(gallery PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_compile_options(gallery PRIVATE
-    -Wall
-    -Wextra
-    -Wpedantic
-)
-
-if(ENABLE_SANITIZERS)
-    target_compile_options(gallery PRIVATE
-        -fsanitize=address,undefined
-        -g
-    )
-    target_link_options(gallery INTERFACE
-        -fsanitize=address,undefined
-    )
-endif()
-
 add_executable(lifetime_demo
     src/lifetime_demo.cpp
 )
 
 target_link_libraries(lifetime_demo PRIVATE gallery)
-
-target_compile_options(lifetime_demo PRIVATE
-    -Wall
-    -Wextra
-    -Wpedantic
-)
-
-if(ENABLE_SANITIZERS)
-    target_compile_options(gallery PRIVATE
-        -fsanitize=address,undefined
-        -g
-    )
-    target_link_options(gallery INTERFACE
-        -fsanitize=address,undefined
-    )
-endif()
 
 include(CTest)
 
@@ -79,22 +46,48 @@ if(BUILD_TESTING)
         GTest::gtest_main
     )
 
+    include(GoogleTest)
+    gtest_discover_tests(photo_tests)
+endif()
+
+# Прапорці компілятора для всіх цілей
+foreach(target gallery lifetime_demo)
+    target_compile_options(${target} PRIVATE
+        -Wall
+        -Wextra
+        -Wpedantic
+    )
+endforeach()
+
+if(BUILD_TESTING)
     target_compile_options(photo_tests PRIVATE
         -Wall
         -Wextra
         -Wpedantic
     )
+endif()
 
-        if(ENABLE_SANITIZERS)
+# Санітайзери
+if(ENABLE_SANITIZERS)
+    foreach(target gallery lifetime_demo)
+        target_compile_options(${target} PRIVATE
+            -fsanitize=address,undefined
+            -g
+        )
+    endforeach()
+
+    target_link_options(lifetime_demo PRIVATE
+        -fsanitize=address,undefined
+    )
+
+    if(BUILD_TESTING)
         target_compile_options(photo_tests PRIVATE
             -fsanitize=address,undefined
             -g
         )
+
         target_link_options(photo_tests PRIVATE
             -fsanitize=address,undefined
         )
     endif()
-
-    include(GoogleTest)
-    gtest_discover_tests(photo_tests)
 endif()
