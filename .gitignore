@@ -1,0 +1,10 @@
+# Каталоги збірки
+build/
+build-asan/
+
+# Файли macOS
+.DS_Store
+
+# Файли IDE
+.idea/
+.vscode/
